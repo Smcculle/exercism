@@ -15,9 +15,8 @@ func IsIsogram(s string) bool {
 		lc := unicode.ToLower(c)
 		if lset[lc] {
 			return false
-		} else {
-			lset[lc] = true
 		}
+		lset[lc] = true
 
 	}
 	return true
