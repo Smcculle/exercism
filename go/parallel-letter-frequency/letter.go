@@ -1,6 +1,12 @@
 package letter
 
+import "sync"
+
+var lock sync.RWMutex
+
 func mergeMaps(a, b map[rune]int) map[rune]int {
+	lock.Lock()
+	defer lock.Unlock()
 	for k, v := range b {
 		a[k] += v
 	}
@@ -10,7 +16,7 @@ func mergeMaps(a, b map[rune]int) map[rune]int {
 
 func ConcurrentFrequency(s []string) FreqMap {
 	result := FreqMap{}
-	mapChan := make(chan FreqMap)
+	mapChan := make(chan FreqMap, 3)
 	for _, text := range s {
 		go func(t string) {
 			mapChan <- Frequency(t)
@@ -18,7 +24,7 @@ func ConcurrentFrequency(s []string) FreqMap {
 	}
 
 	for range s {
-		result = mergeMaps(result, <-mapChan)
+		go mergeMaps(result, <-mapChan)
 	}
 
 	return result
