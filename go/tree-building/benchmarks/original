@@ -1,0 +1,7 @@
+goos: windows
+goarch: amd64
+BenchmarkTwoTree-4       	       1	3267688600 ns/op	 5462112 B/op	  131233 allocs/op
+BenchmarkTenTree-4       	      20	  73964980 ns/op	 1115488 B/op	   19812 allocs/op
+BenchmarkShallowTree-4   	       2	 554536050 ns/op	429184064 B/op	   20019 allocs/op
+PASS
+ok  	_/C_/Programming/Exercism/go/tree-building	6.510s
