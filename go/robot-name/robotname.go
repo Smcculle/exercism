@@ -23,8 +23,7 @@ var src = rand.NewSource(time.Now().UnixNano())
 
 func (r *Robot) Name() string {
 	if r.name == "" {
-		r.name = noDupRandomName()
-		issuedNames[r.name] = true
+		r.name = randomName(2)
 	}
 	return r.name
 }
@@ -44,10 +43,10 @@ func noDupRandomName() string {
 // randomName generates a random string of characters from letterBytes of length n.
 func randomName(n int) string {
 	prefix := make([]byte, n)
-	var suffix string
+	var suffix int64
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
-		suffix = fmt.Sprintf("%03d", cache%1000)
+		suffix = cache % 1000
 		if remain == 0 {
 			cache, remain = src.Int63(), letterIdxMax
 		}
@@ -59,5 +58,5 @@ func randomName(n int) string {
 		remain--
 	}
 
-	return string(prefix) + suffix
+	return fmt.Sprintf("%c%c%03d", prefix[0], prefix[1], suffix)
 }
