@@ -57,12 +57,13 @@ func errChk(r Record, n int) error {
 
 	if r.ID == 0 && r.Parent == 0 {
 		return nil
-	} else if r.Parent >= r.ID {
-		return errors.New("parent ID >= child ID")
-	} else if r.ID >= n {
-		return errors.New("non-continuous")
-	} else {
-		return nil
 	}
+	if r.Parent >= r.ID {
+		return errors.New("parent ID >= child ID")
+	}
+	if r.ID >= n {
+		return errors.New("non-continuous")
+	}
+	return nil
 
 }
