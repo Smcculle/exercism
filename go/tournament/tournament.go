@@ -25,6 +25,8 @@ type Team struct {
 	mp, w, d, l, p int
 }
 
+type Results map[string]*Team
+
 func (t *Team) AddGame(p int) {
 	t.mp++
 	t.p += p
@@ -60,7 +62,7 @@ func (t TeamSlice) Less(i, j int) bool {
 // format is incorrect or outcome is not win/loss/draw.  Formatted table is written to the supplied io.Writer.
 func Tally(reader io.Reader, writer io.Writer) error {
 
-	results := make(map[string]*Team)
+	results := make(Results)
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
 		game := scanner.Text()
@@ -68,7 +70,7 @@ func Tally(reader io.Reader, writer io.Writer) error {
 			continue
 		}
 
-		t1, t2, outcome, err := splitGame(game, &results)
+		t1, t2, outcome, err := splitGame(game, results)
 
 		if err != nil {
 			return err
@@ -88,21 +90,21 @@ func Tally(reader io.Reader, writer io.Writer) error {
 		}
 	}
 
-	WriteResults(results, writer)
+	results.WriteTo(writer)
 
 	return nil
 }
 
-func WriteResults(results map[string]*Team, w io.Writer) {
-	rs := MakeSlice(results)
+func (results Results) WriteTo(w io.Writer) {
+	rs := results.MakeSlice()
 	sort.Sort(rs)
-	w.Write([]byte(fmt.Sprintf(tableFormat, "Team", "MP", "W", "D", "L", "P")))
+	io.WriteString(w, fmt.Sprintf(tableFormat, "Team", "MP", "W", "D", "L", "P"))
 	for _, v := range rs {
-		w.Write([]byte(fmt.Sprintf(tableFormat, v.name, v.mp, v.w, v.d, v.l, v.p)))
+		io.WriteString(w, fmt.Sprintf(tableFormat, v.name, v.mp, v.w, v.d, v.l, v.p))
 	}
 }
 
-func MakeSlice(results map[string]*Team) TeamSlice {
+func (results Results) MakeSlice() TeamSlice {
 	n := len(results)
 	slice := make([]Team, n)
 	i := 0
@@ -114,35 +116,31 @@ func MakeSlice(results map[string]*Team) TeamSlice {
 	return slice
 }
 
-func NewResult(name string) *Team {
-	r := new(Team)
-	r.name = name
-	return r
-}
-
-func addOrRetrieveResult(s string, results *map[string]*Team) *Team {
-	r, ok := (*results)[s]
+func (results Results) addOrRetrieve(s string) *Team {
+	r, ok := results[s]
 
 	if !ok {
 		r = NewResult(s)
-		(*results)[s] = r
+		results[s] = r
 	}
 	return r
 }
 
 // splitResults returns two results from the given string and the game outcome.
-func splitGame(game string, results *map[string]*Team) (t1 *Team, t2 *Team, outcome string, err error) {
+func splitGame(game string, results Results) (t1 *Team, t2 *Team, outcome string, err error) {
 	err = nil
-	defer func() {
-		if x := recover(); x != nil {
-			err = fmt.Errorf("%v", x)
-		}
-	}()
 	split := strings.Split(game, ";")
 	if len(split) != 3 {
-		panic("incorrect format")
+		err = fmt.Errorf("incorrect format")
+		return
 	}
-	t1, t2 = addOrRetrieveResult(split[0], results), addOrRetrieveResult(split[1], results)
+	t1, t2 = results.addOrRetrieve(split[0]), results.addOrRetrieve(split[1])
 	outcome = split[2]
 	return
+}
+
+func NewResult(name string) *Team {
+	r := new(Team)
+	r.name = name
+	return r
 }
