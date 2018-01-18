@@ -1,6 +1,8 @@
+// Package tournament can be used to keep score in a 1v1 team tournament, creates a formatted table as output.
 package tournament
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -17,35 +19,51 @@ const (
 
 const tableFormat = "%-30v |%3v |%3v |%3v |%3v |%3v\n"
 
-// Struct to hold a team's results
-type Result struct {
+// Team holds a single team's tournament results
+type Team struct {
 	name           string
 	mp, w, d, l, p int
 }
 
-// ResultSlice implements sort.Interface which sorts ascending by points and then name
-type ResultSlice []Result
-
-func (r ResultSlice) Len() int      { return len(r) }
-func (r ResultSlice) Swap(i, j int) { r[i], r[j] = r[j], r[i] }
-func (r ResultSlice) Less(i, j int) bool {
-	if r[i].p == r[j].p {
-		return r[i].name < r[j].name
+func (t *Team) AddGame(p int) {
+	t.mp++
+	t.p += p
+	switch p {
+	case WinP:
+		t.w++
+	case LossP:
+		t.l++
+	case DrawP:
+		t.d++
+	default:
+		panic("can't add game")
 	}
-	return r[i].p > r[j].p
+}
+
+func (t *Team) String() string {
+	return fmt.Sprintf(tableFormat, t.name, t.mp, t.w, t.d, t.l, t.p)
+}
+
+// TeamSlice implements sort.Interface which sorts ascending by points and then name
+type TeamSlice []Team
+
+func (t TeamSlice) Len() int      { return len(t) }
+func (t TeamSlice) Swap(i, j int) { t[i], t[j] = t[j], t[i] }
+func (t TeamSlice) Less(i, j int) bool {
+	if t[i].p == t[j].p {
+		return t[i].name < t[j].name
+	}
+	return t[i].p > t[j].p
 }
 
 // Tally converts input from io.Reader, requiring format of (team; team; outcome) for each line. Returns error if
-// format is incorrect or outcome is not win/loss/draw.  Formatted table is written to the supplied io.Writer
+// format is incorrect or outcome is not win/loss/draw.  Formatted table is written to the supplied io.Writer.
 func Tally(reader io.Reader, writer io.Writer) error {
 
-	results := make(map[string]*Result)
-	buff := make([]byte, 1024)
-	reader.Read(buff)
-	games := strings.Split(string(buff), "\n")
-	for _, game := range games {
-
-		game = strings.Trim(game, " \x00")
+	results := make(map[string]*Team)
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		game := scanner.Text()
 		if len(game) == 0 || game[0] == '#' {
 			continue
 		}
@@ -74,7 +92,8 @@ func Tally(reader io.Reader, writer io.Writer) error {
 
 	return nil
 }
-func WriteResults(results map[string]*Result, w io.Writer) {
+
+func WriteResults(results map[string]*Team, w io.Writer) {
 	rs := MakeSlice(results)
 	sort.Sort(rs)
 	w.Write([]byte(fmt.Sprintf(tableFormat, "Team", "MP", "W", "D", "L", "P")))
@@ -83,9 +102,9 @@ func WriteResults(results map[string]*Result, w io.Writer) {
 	}
 }
 
-func MakeSlice(results map[string]*Result) ResultSlice {
+func MakeSlice(results map[string]*Team) TeamSlice {
 	n := len(results)
-	slice := make([]Result, n)
+	slice := make([]Team, n)
 	i := 0
 	for _, v := range results {
 		slice[i] = *v
@@ -95,28 +114,13 @@ func MakeSlice(results map[string]*Result) ResultSlice {
 	return slice
 }
 
-func NewResult(name string) *Result {
-	r := new(Result)
+func NewResult(name string) *Team {
+	r := new(Team)
 	r.name = name
 	return r
 }
 
-func (r *Result) AddGame(p int) {
-	r.mp++
-	r.p += p
-	switch p {
-	case WinP:
-		r.w++
-	case LossP:
-		r.l++
-	case DrawP:
-		r.d++
-	default:
-		panic("can't add game")
-	}
-}
-
-func addOrRetrieveResult(s string, results *map[string]*Result) *Result {
+func addOrRetrieveResult(s string, results *map[string]*Team) *Team {
 	r, ok := (*results)[s]
 
 	if !ok {
@@ -127,7 +131,7 @@ func addOrRetrieveResult(s string, results *map[string]*Result) *Result {
 }
 
 // splitResults returns two results from the given string and the game outcome.
-func splitGame(game string, results *map[string]*Result) (t1 *Result, t2 *Result, outcome string, err error) {
+func splitGame(game string, results *map[string]*Team) (t1 *Team, t2 *Team, outcome string, err error) {
 	err = nil
 	defer func() {
 		if x := recover(); x != nil {
