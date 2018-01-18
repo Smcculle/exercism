@@ -62,13 +62,22 @@ func (t TeamSlice) Less(i, j int) bool {
 type Results map[string]*Team
 
 // WriteTo sorts results and sends it to the specified io.Writer.
-func (results Results) WriteTo(w io.Writer) {
+func (results Results) WriteTo(w io.Writer) (int64, error){
+	var err error = nil
+	n := 0
 	rs := results.MakeSlice()
 	sort.Sort(rs)
-	io.WriteString(w, fmt.Sprintf(tableFormat, "Team", "MP", "W", "D", "L", "P"))
+	written, _ := io.WriteString(w, fmt.Sprintf(tableFormat, "Team", "MP", "W", "D", "L", "P"))
 	for _, v := range rs {
-		io.WriteString(w, fmt.Sprintf(tableFormat, v.name, v.mp, v.w, v.d, v.l, v.p))
+		written, err = io.WriteString(w, fmt.Sprintf(tableFormat, v.name, v.mp, v.w, v.d, v.l, v.p))
+		n += written
+
+		if err != nil {
+			break
+		}
 	}
+	
+	return int64(n), err
 }
 
 func (results Results) MakeSlice() TeamSlice {
