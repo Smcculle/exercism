@@ -19,34 +19,35 @@ const (
 
 const tableFormat = "%-30v |%3v |%3v |%3v |%3v |%3v\n"
 
-// Team holds a single team's tournament results
+// Team holds a single team's tournament results.
 type Team struct {
 	name           string
 	mp, w, d, l, p int
 }
 
-type Results map[string]*Team
-
-func (t *Team) AddGame(p int) {
+func (t *Team) AddWin() {
 	t.mp++
-	t.p += p
-	switch p {
-	case WinP:
-		t.w++
-	case LossP:
-		t.l++
-	case DrawP:
-		t.d++
-	default:
-		panic("can't add game")
-	}
+	t.w++
+	t.p += WinP
+}
+
+func (t *Team) AddLoss() {
+	t.mp++
+	t.l++
+	t.p += LossP
+}
+
+func (t *Team) AddDraw() {
+	t.mp++
+	t.d++
+	t.p += DrawP
 }
 
 func (t *Team) String() string {
 	return fmt.Sprintf(tableFormat, t.name, t.mp, t.w, t.d, t.l, t.p)
 }
 
-// TeamSlice implements sort.Interface which sorts ascending by points and then name
+// TeamSlice implements sort.Interface using points and then name as the sort key.
 type TeamSlice []Team
 
 func (t TeamSlice) Len() int      { return len(t) }
@@ -58,43 +59,9 @@ func (t TeamSlice) Less(i, j int) bool {
 	return t[i].p > t[j].p
 }
 
-// Tally converts input from io.Reader, requiring format of (team; team; outcome) for each line. Returns error if
-// format is incorrect or outcome is not win/loss/draw.  Formatted table is written to the supplied io.Writer.
-func Tally(reader io.Reader, writer io.Writer) error {
+type Results map[string]*Team
 
-	results := make(Results)
-	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() {
-		game := scanner.Text()
-		if len(game) == 0 || game[0] == '#' {
-			continue
-		}
-
-		t1, t2, outcome, err := splitGame(game, results)
-
-		if err != nil {
-			return err
-		}
-
-		if outcome == "win" {
-			t1.AddGame(WinP)
-			t2.AddGame(LossP)
-		} else if outcome == "loss" {
-			t1.AddGame(LossP)
-			t2.AddGame(WinP)
-		} else if outcome == "draw" {
-			t1.AddGame(DrawP)
-			t2.AddGame(DrawP)
-		} else {
-			return errors.New("incorrect format")
-		}
-	}
-
-	results.WriteTo(writer)
-
-	return nil
-}
-
+// WriteTo sorts results and sends it to the specified io.Writer.
 func (results Results) WriteTo(w io.Writer) {
 	rs := results.MakeSlice()
 	sort.Sort(rs)
@@ -126,16 +93,62 @@ func (results Results) addOrRetrieve(s string) *Team {
 	return r
 }
 
+func (results Results) Add(game string) (err error) {
+	team1, team2, outcome, err := splitGame(game)
+	t1, t2 := results.addOrRetrieve(team1), results.addOrRetrieve(team2)
+	if err != nil {
+		return err
+	}
+
+	if outcome == "win" {
+		t1.AddWin()
+		t2.AddLoss()
+	} else if outcome == "loss" {
+		t1.AddLoss()
+		t2.AddWin()
+	} else if outcome == "draw" {
+		t1.AddDraw()
+		t2.AddDraw()
+	} else {
+		return errors.New("incorrect format")
+	}
+
+	return nil
+}
+
+// Tally converts input from io.Reader, requiring format of (team; team; outcome) for each line. Returns error if
+// format is incorrect or outcome is not win/loss/draw.  Formatted table is written to the supplied io.Writer.
+func Tally(reader io.Reader, writer io.Writer) error {
+
+	results := make(Results)
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		game := scanner.Text()
+		if len(game) == 0 || game[0] == '#' {
+			continue
+		}
+
+		err := results.Add(game)
+		if err != nil {
+			return err
+		}
+
+	}
+
+	results.WriteTo(writer)
+
+	return nil
+}
+
 // splitResults returns two results from the given string and the game outcome.
-func splitGame(game string, results Results) (t1 *Team, t2 *Team, outcome string, err error) {
+func splitGame(game string) (t1 string, t2 string, outcome string, err error) {
 	err = nil
 	split := strings.Split(game, ";")
 	if len(split) != 3 {
 		err = fmt.Errorf("incorrect format")
 		return
 	}
-	t1, t2 = results.addOrRetrieve(split[0]), results.addOrRetrieve(split[1])
-	outcome = split[2]
+	t1, t2, outcome = split[0], split[1], split[2]
 	return
 }
 
