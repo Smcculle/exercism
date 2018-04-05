@@ -2,6 +2,7 @@ package twelve
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
 	"testing"
 )
@@ -67,5 +68,24 @@ func TestVerse(t *testing.T) {
 		if actual != test.expected {
 			t.Errorf("Twelve Days test [%d], expected [%s], actual [%s]", test.input, test.expected, actual)
 		}
+	}
+}
+
+func BenchmarkSong(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Song()
+	}
+}
+
+func BenchmarkVerse(b *testing.B) {
+	min, max := 0, 12
+	randNums := make([]int, b.N)
+	for i := 0; i < b.N; i++ {
+		randNums[i] = rand.Intn(max-min) + min
+	}
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		Verse(randNums[i])
 	}
 }

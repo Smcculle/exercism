@@ -1,4 +1,4 @@
-`_``_`# Twelve Days
+# Twelve Days
 
 Output the lyrics to 'The Twelve Days of Christmas'.
 
