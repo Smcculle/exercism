@@ -46,7 +46,7 @@ func Song() string {
 }
 
 func Verse(i int) string {
-	i--  // convert to 0-index
+	i-- // convert to 0-index
 	var total bytes.Buffer
 	for j := i; j > 0; j-- {
 		total.WriteString(gifts[j])
