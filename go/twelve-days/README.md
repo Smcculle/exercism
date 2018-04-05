@@ -2,6 +2,9 @@
 
 Output the lyrics to 'The Twelve Days of Christmas'.
 
+Added benchmarks to test efficiency of various string concatenation methods 
+
+
 ```text
 On the first day of Christmas my true love gave to me, a Partridge in a Pear Tree.
 
