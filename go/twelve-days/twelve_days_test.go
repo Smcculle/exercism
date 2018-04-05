@@ -78,10 +78,10 @@ func BenchmarkSong(b *testing.B) {
 }
 
 func BenchmarkVerse(b *testing.B) {
-	min, max := 0, 12
+	min, max := 1, 12
 	randNums := make([]int, b.N)
 	for i := 0; i < b.N; i++ {
-		randNums[i] = rand.Intn(max-min) + min
+		randNums[i] = rand.Intn(max-min+1) + min
 	}
 	b.ResetTimer()
 

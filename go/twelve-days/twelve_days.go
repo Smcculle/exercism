@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-const fmtstring = "On the %s day of Christmas my true love gave to me, %s"
+const fmtString = "On the %s day of Christmas my true love gave to me, "
 
 var ordinals = [12]string{
 	"first",
@@ -22,19 +22,20 @@ var ordinals = [12]string{
 	"twelfth",
 }
 
-var gifts = [12]string{
+var gifts = [13]string{
 	"a Partridge in a Pear Tree.",
-	"two Turtle Doves",
-	"three French Hens",
-	"four Calling Birds",
-	"five Gold Rings",
-	"six Geese-a-Laying",
-	"seven Swans-a-Swimming",
-	"eight Maids-a-Milking",
-	"nine Ladies Dancing",
-	"ten Lords-a-Leaping",
-	"eleven Pipers Piping",
-	"twelve Drummers Drumming",
+	"two Turtle Doves, ",
+	"three French Hens, ",
+	"four Calling Birds, ",
+	"five Gold Rings, ",
+	"six Geese-a-Laying, ",
+	"seven Swans-a-Swimming, ",
+	"eight Maids-a-Milking, ",
+	"nine Ladies Dancing, ",
+	"ten Lords-a-Leaping, ",
+	"eleven Pipers Piping, ",
+	"twelve Drummers Drumming, ",
+	"and a Partridge in a Pear Tree.",
 }
 
 func Song() string {
@@ -47,16 +48,15 @@ func Song() string {
 
 func Verse(i int) string {
 	i-- // convert to 0-index
-	var total bytes.Buffer
-	for j := i; j > 0; j-- {
-		total.WriteString(gifts[j])
-		total.WriteString(", ")
-	}
-	if total.Len() == 0 {
-		total.WriteString(gifts[0])
-	} else {
-		total.WriteString(fmt.Sprintf("and %s", gifts[0]))
+	var verse bytes.Buffer
+	if i == 0 {
+		return fmt.Sprintf(fmtString, ordinals[0]) + gifts[0]
 	}
 
-	return fmt.Sprintf(fmtstring, ordinals[i], total.String())
+	verse.WriteString(fmt.Sprintf(fmtString, ordinals[i]))
+	for ; i > 0; i-- {
+		verse.WriteString(gifts[i])
+	}
+	verse.WriteString(gifts[12])
+	return verse.String()
 }
