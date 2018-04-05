@@ -1,0 +1,6 @@
+goos: windows
+goarch: amd64
+BenchmarkSong-8    	  200000	      9801 ns/op
+BenchmarkVerse-8   	 3000000	       573 ns/op
+PASS
+ok  	_/C_/Users/csadmin/workspaces/github/exercism/go/twelve-days	4.521s
