@@ -1,8 +1,8 @@
 package twelve
 
 import (
-	"bytes"
 	"fmt"
+	"strings"
 )
 
 const fmtString = "On the %s day of Christmas my true love gave to me, "
@@ -39,7 +39,7 @@ var gifts = [13]string{
 }
 
 func Song() string {
-	var song bytes.Buffer
+	var song strings.Builder
 	for day := 1; day <= 12; day++ {
 		song.WriteString(Verse(day) + "\n")
 	}
@@ -48,7 +48,7 @@ func Song() string {
 
 func Verse(i int) string {
 	i-- // convert to 0-index
-	var verse bytes.Buffer
+	var verse strings.Builder
 	if i == 0 {
 		return fmt.Sprintf(fmtString, ordinals[0]) + gifts[0]
 	}
