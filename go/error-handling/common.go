@@ -18,6 +18,18 @@ type TransientError struct {
 	err error
 }
 
+func open(o ResourceOpener) (Resource, error) {
+	resource, err := o()
+	if err != nil {
+		if _, ok := err.(TransientError); ok {
+			resource, err = o()
+		} else {
+			return nil, err
+		}
+	}
+	return resource, err
+}
+
 func Use(o ResourceOpener, input string) (err error) {
 
 	var resource Resource
@@ -36,16 +48,9 @@ func Use(o ResourceOpener, input string) (err error) {
 		}
 	}()
 
-loop:
-	for {
-		resource, err = o()
-		switch err.(type) {
-		case nil:
-			break loop
-		case TransientError: // try again
-		case error:
-			return
-		}
+	resource, err = open(o)
+	if err != nil {
+		return
 	}
 
 	resource.Frob(input)
