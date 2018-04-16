@@ -8,7 +8,7 @@ import (
 type counter struct {
 	rwBytes int64
 	nops    int
-	lock    sync.Mutex
+	lock    sync.RWMutex
 }
 
 type WC struct {
@@ -34,11 +34,15 @@ func (c *counter) increment(n int64) {
 	c.rwBytes += n
 }
 
-func (w WC) WriteCount() (int64, int) {
+func (w *WC) WriteCount() (int64, int) {
+	w.lock.RLock()
+	defer w.lock.RUnlock()
 	return w.counter.rwBytes, w.counter.nops
 }
 
-func (w RC) ReadCount() (n int64, nops int) {
+func (w *RC) ReadCount() (n int64, nops int) {
+	w.lock.RLock()
+	defer w.lock.RUnlock()
 	return w.counter.rwBytes, w.counter.nops
 }
 
