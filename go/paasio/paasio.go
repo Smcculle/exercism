@@ -2,64 +2,73 @@ package paasio
 
 import (
 	"io"
+	"sync"
 )
+
+type counter struct {
+	rwBytes int64
+	nops    int
+	lock    sync.Mutex
+}
 
 type WC struct {
 	writer io.Writer
+	counter
 }
+
 type RC struct {
 	reader io.Reader
+	counter
 }
+
 type RWC struct {
-	readwriter io.ReadWriter
+	*WC
+	*RC
+	counter
 }
 
-func (w WC) WriteCount() (n int64, nops int){
-	return 0, 0
+func (c *counter) increment(n int64) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	c.nops++
+	c.rwBytes += n
 }
 
-func (w RWC) WriteCount() (n int64, nops int){
-	return 0, 0
+func (w WC) WriteCount() (int64, int) {
+	return w.counter.rwBytes, w.counter.nops
 }
 
 func (w RC) ReadCount() (n int64, nops int) {
-	return 0, 0
+	return w.counter.rwBytes, w.counter.nops
 }
 
-func (w RWC) ReadCount() (n int64, nops int) {
-	return 0, 0
-}
-
-func (w WC) Write(p []byte)(n int, err error) {
+func (w WC) Write(p []byte) (n int, err error) {
 	return w.writer.Write(p)
 }
 
-func (w RWC) Write(p []byte)(n int, err error) {
-	return w.readwriter.Write(p)
-}
+func (w *RC) Read(p []byte) (n int, err error) {
 
-func (w RC) Read(p []byte) (n int, err error) {
-	return w.reader.Read(p)
-}
-
-func (w RWC) Read(p []byte) (n int, err error) {
-	return w.readwriter.Read(p)
+	n, err = w.reader.Read(p)
+	w.counter.increment(int64(n))
+	return
 }
 
 func NewWriteCounter(w io.Writer) WriteCounter {
 	wc := &WC{writer: w}
 
-	return *wc
+	return wc
 }
 
 func NewReadCounter(r io.Reader) ReadCounter {
 	wc := &RC{reader: r}
 
-	return *wc
+	return wc
 }
 
-func NewReadWriteCounter(rw io.ReadWriter) RWC {
-	wc := &RWC{readwriter: rw}
+func NewReadWriteCounter(rw io.ReadWriter) ReadWriteCounter {
+	wc := &WC{writer: rw}
+	rc := &RC{reader: rw}
+	rwc := &RWC{WC: wc, RC: rc}
 
-	return *wc
+	return rwc
 }
