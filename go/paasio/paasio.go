@@ -42,8 +42,11 @@ func (w RC) ReadCount() (n int64, nops int) {
 	return w.counter.rwBytes, w.counter.nops
 }
 
-func (w WC) Write(p []byte) (n int, err error) {
-	return w.writer.Write(p)
+func (w *WC) Write(p []byte) (n int, err error) {
+
+	n, err = w.writer.Write(p)
+	w.counter.increment(int64(n))
+	return
 }
 
 func (w *RC) Read(p []byte) (n int, err error) {
