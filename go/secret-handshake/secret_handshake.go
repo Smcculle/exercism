@@ -1,45 +1,25 @@
 package secret
 
-import (
-	"fmt"
-	"strconv"
-)
+var maskF = []uint{1, 2, 4, 8}
+var maskR = []uint{8, 4, 2, 1}
+var code = map[uint]string{1: "wink", 2: "double blink", 4: "close your eyes", 8: "jump"}
 
-var codes = []string{"jump", "close your eyes", "double blink", "wink"}
+func Handshake(n uint) []string {
 
-// Handshake loops through a binary string representation of code and builds a handshake from the given codes
-func Handshake(code uint) (handshake []string) {
+	result := make([]string, 0, 4)
+	var mask []uint
 
-	mask := toBinString(code)
-
-	if shouldReverse(mask) {
-		handshake = loop(mask, len(mask)-1, 0, -1)
+	if n&16 > 0 {
+		mask = maskR
 	} else {
-		handshake = loop(mask, 1, len(mask), 1)
+		mask = maskF
 	}
 
-	return
-}
-
-
-func loop(flags string, start, stop, step int) []string {
-	var h []string
-	for i := start; i != stop; i += step {
-		if flags[i] == 49 {
-			h = append(h, codes[i-1])
+	for _, m := range mask {
+		if n&m > 0 {
+			result = append(result, code[m])
 		}
 	}
 
-	return h
-}
-
-func toBinString(i uint) string {
-	return fmt.Sprintf("%05s", strconv.FormatInt(int64(i), 2))
-}
-
-func shouldReverse(s string) bool {
-	if s[0] == 48 {
-		return true
-	}
-	return false
+	return result
 }
