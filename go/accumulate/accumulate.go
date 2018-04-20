@@ -5,49 +5,30 @@ import (
 )
 
 func Accumulate(collection interface{}, f interface{}) []interface{} {
-	slice, _ := convertToSlice(collection)
-	accumulator, _ := convertArg(f, reflect.Func)
-
-	result := make([]interface{}, len(slice))
-	for i, elem := range slice {
-		result[i] = invokeFn(accumulator, elem)
+	slice := convertArg(collection, reflect.Slice)
+	accumulator := convertArg(f, reflect.Func)
+	n := slice.Len()
+	result := make([]interface{}, slice.Len())
+	for i := 0; i < n; i++ {
+		result[i] = invoke(accumulator, slice.Index(i))
 	}
 
 	return result
 }
 
-// convertToSlice creates a generic slice of elements from the given collection
-func convertToSlice(c interface{}) (slice []interface{}, ok bool) {
-	collection, ok := convertArg(c, reflect.Slice)
-
-	if !ok {
-		return
-	}
-
-	n := collection.Len()
-	slice = make([]interface{}, n)
-
-	for i := 0; i < n; i++ {
-		slice[i] = collection.Index(i).Interface()
-	}
-
-	return slice, true
+// invoke takes a func of a single argument and returns the result of applying that func on the given arg.
+func invoke(fn reflect.Value, arg reflect.Value) reflect.Value {
+	rarg := []reflect.Value{arg}
+	return fn.Call(rarg)[0] //slice of one element
 }
 
-// invokeFn takes a func of a single argument and returns the result of applying that func on the given arg.
-func invokeFn(fn reflect.Value, arg interface{}) interface{} {
-	rarg := []reflect.Value{reflect.ValueOf(arg)}
-	vals := fn.Call(rarg) // slice of one element
-	return vals[0]
-}
-
-// convertArg ensures that the value of arg is of the given kind, to ensure the collection
-// given to convertToSlice is a slice.
-func convertArg(arg interface{}, kind reflect.Kind) (val reflect.Value, ok bool) {
+// convertArg ensures that the value of arg is of the given kind
+func convertArg(arg interface{}, kind reflect.Kind) (val reflect.Value) {
 	val = reflect.ValueOf(arg)
 
-	if val.Kind() == kind {
-		ok = true
+	if val.Kind() != kind {
+		panic("incorrect type reflected")
 	}
+
 	return
 }
