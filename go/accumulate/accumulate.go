@@ -8,7 +8,7 @@ func Accumulate(collection interface{}, f interface{}) []interface{} {
 	slice := convertArg(collection, reflect.Slice)
 	accumulator := convertArg(f, reflect.Func)
 	n := slice.Len()
-	result := make([]interface{}, slice.Len())
+	result := make([]interface{}, n)
 	for i := 0; i < n; i++ {
 		result[i] = invoke(accumulator, slice.Index(i))
 	}
