@@ -13,10 +13,7 @@ func Triangle(n int) [][]int {
 }
 
 func increment(row []int) []int {
-	if len(row) == 0 {
-		return []int{1}
-	}
-
+	
 	next := make([]int, len(row)+1)
 	next[0] = 1
 	i := 1
