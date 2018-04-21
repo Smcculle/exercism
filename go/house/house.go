@@ -3,18 +3,18 @@ package house
 import "strings"
 
 var rhyme = []string{
-	"the house that Jack built.",
-	"the malt\nthat lay in",
-	"the rat\nthat ate",
-	"the cat\nthat killed",
-	"the dog\nthat worried",
-	"the cow with the crumpled horn\nthat tossed",
-	"the maiden all forlorn\nthat milked",
-	"the man all tattered and torn\nthat kissed",
-	"the priest all shaven and shorn\nthat married",
-	"the rooster that crowed in the morn\nthat woke",
-	"the farmer sowing his corn\nthat kept",
-	"the horse and the hound and the horn\nthat belonged to",
+	"house that Jack built.",
+	"malt\nthat lay in",
+	"rat\nthat ate",
+	"cat\nthat killed",
+	"dog\nthat worried",
+	"cow with the crumpled horn\nthat tossed",
+	"maiden all forlorn\nthat milked",
+	"man all tattered and torn\nthat kissed",
+	"priest all shaven and shorn\nthat married",
+	"rooster that crowed in the morn\nthat woke",
+	"farmer sowing his corn\nthat kept",
+	"horse and the hound and the horn\nthat belonged to",
 }
 
 var verses = make([]string, len(rhyme))
@@ -32,6 +32,7 @@ func Song() string {
 	return builder.String()
 }
 
+//Verse uses memoization to avoid repeating work
 func Verse(n int) string {
 	v := n - 1
 
@@ -40,10 +41,10 @@ func Verse(n int) string {
 	}
 
 	if v == 0 {
-		verses[v] = "This is " + rhyme[0]
+		verses[v] = "This is the " + rhyme[0]
 		return verses[v]
 	}
 
-	verses[v] = "This is " + rhyme[v] + Verse(v)[7:]
+	verses[v] = "This is the " + rhyme[v] + Verse(v)[7:]
 	return verses[v]
 }
