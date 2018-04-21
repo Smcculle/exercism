@@ -62,7 +62,7 @@ func BenchmarkPascalsTriangleFixed(b *testing.B) {
 // solution using triangles of an increasingly larger size from 1 to 20.
 func BenchmarkPascalsTriangleIncreasing(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		for x := 1; x <= testSize; x++ {
+		for x := 0; x <= testSize; x++ {
 			Triangle(x)
 		}
 	}

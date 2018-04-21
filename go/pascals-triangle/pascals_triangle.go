@@ -3,6 +3,10 @@ package pascal
 func Triangle(n int) [][]int {
 
 	var triangle = make([][]int, n)
+	if n <= 0 {
+		return triangle
+	}
+
 	triangle[0] = []int{1}
 
 	for i := 1; i < n; i++ {
@@ -13,7 +17,7 @@ func Triangle(n int) [][]int {
 }
 
 func increment(row []int) []int {
-	
+
 	next := make([]int, len(row)+1)
 	next[0] = 1
 	i := 1
