@@ -4,8 +4,6 @@ import (
 	"errors"
 )
 
-const squares = "abcdefgh"
-
 type coord struct {
 	x int
 	y int
