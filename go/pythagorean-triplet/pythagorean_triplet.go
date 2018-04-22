@@ -1,61 +1,57 @@
 package pythagorean
 
-import "fmt"
-
 type Factors map[int]int
-type Triplet [3] int
+type Triplet [3]int
 
+// Range returns all triplets where each side lies in [min..max]
 func Range(min, max int) []Triplet {
 	var trips []Triplet
-	fmt.Println("\t min max ", min, max )
-	r := 2
-	for {
-		newTrips, valid := genTriplets(r)
-		newTrips = filter(newTrips, min, max)
-		if len(newTrips) == 0 && valid {
-			break
-		}
+
+	for r := 2; r < max/2; r++ {
+		newTrips := genTriplets(r)
 		trips = append(trips, newTrips...)
-		r++
 	}
 
-	return trips
+	return filterRange(trips, min, max)
 }
 
-func Sum(p int ) []Triplet {
-	return nil
+// Sum returns all triplets where x+y+z=p
+func Sum(p int) []Triplet {
+	return filterSum(Range(0, p/2), p)
 }
 
-func filter(trips []Triplet, min, max int)(valid []Triplet) {
+func filterSum(trips []Triplet, p int) (valid []Triplet) {
 	for _, t := range trips {
-		isvalid := isValid(t, min, max)
-		fmt.Printf("testing %v, isvalid? %v\n", t, isvalid)
-		if isvalid {
+		if t[0]+t[1]+t[2] == p {
 			valid = append(valid, t)
 		}
 	}
-	fmt.Println("returning set ", valid, " from set ", trips)
 	return
 }
 
-func isValid(t Triplet, min, max int) bool {
-	return t[0] >= min && t[2] <= max
+func filterRange(trips []Triplet, min, max int) (valid []Triplet) {
+	for _, t := range trips {
+		if t[0] >= min && t[2] <= max {
+			valid = append(valid, t)
+		}
+	}
+	return
 }
 
-func genTriplets(r int) ([]Triplet, bool){
+// genTriplets returns a set of pythagorean triplets using Dickson's method
+func genTriplets(r int) []Triplet {
 
 	var trips []Triplet
 
 	if r*r%2 != 0 {
-		return nil, false
+		return nil
 	}
 
-	factors := getFactors(r * r / 2)
-	for s, t := range factors {
+	for s, t := range getFactors(r * r / 2) {
 		trips = append(trips, convertRST(r, s, t))
 	}
 
-	return trips, true
+	return trips
 }
 
 func convertRST(r, s, t int) Triplet {
@@ -75,4 +71,3 @@ func getFactors(n int) Factors {
 	}
 	return factors
 }
-
