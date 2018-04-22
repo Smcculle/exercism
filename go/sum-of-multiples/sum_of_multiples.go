@@ -1,34 +1,30 @@
 package summultiples
 
-type set map[int]bool
-
-func (s *set) add(i int) {
-	if !(*s)[i] {
-		(*s)[i] = true
-	}
-}
-func (s set) sum() (sum int) {
-	for k := range s {
-		sum += k
-	}
-	return
-}
-
-func (s *set) addMults(limit int, divisor int) {
+func addMults(limit int, divisor int, divisors []int) (sum int) {
 
 	for multiple := divisor; multiple < limit; multiple += divisor {
-		s.add(multiple)
+		sum += multiple
+		checkRepeat(divisors, divisor, multiple, &sum)
 	}
 
 	return
 }
 
-func SumMultiples(limit int, divisors ...int) int {
-	var mults = make(set)
+//checkRepeat removes any multiple that is common to another divisor from sum
+func checkRepeat(divisors []int, divisor int, multiple int, sum *int) {
+	for _, common := range divisors {
+		if common > divisor && multiple%common == 0 {
+			*sum -= multiple
+			break
+		}
+	}
+}
+
+func SumMultiples(limit int, divisors ...int) (sum int) {
 
 	for _, divisor := range divisors {
-		mults.addMults(limit, divisor)
+		sum += addMults(limit, divisor, divisors)
 	}
 
-	return mults.sum()
+	return
 }
