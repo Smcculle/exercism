@@ -1,0 +1,6 @@
+first test
+goos: windows
+goarch: amd64
+BenchmarkPangram-4   	  100000	     13706 ns/op
+PASS
+ok  	_/C_/Programming/Exercism/go/pangram	1.540s
