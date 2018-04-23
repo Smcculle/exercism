@@ -1,28 +1,14 @@
+Dickson's method
 goos: windows
 goarch: amd64
-BenchmarkSong-8    	  100000	     14152 ns/op
-BenchmarkVerse-8   	 2000000	       915 ns/op
+BenchmarkRange-4   	   30000	     58660 ns/op
+BenchmarkSum-4     	     300	   5197251 ns/op
 PASS
-ok  	_/C_/Users/csadmin/workspaces/github/exercism/go/twelve-days	4.458s
 
+
+Euclid's method 
 goos: windows
 goarch: amd64
-BenchmarkSong-8    	  100000	     13063 ns/op
-BenchmarkVerse-8   	       0	         0 ns/op
+BenchmarkRange-4   	 1000000	      1423 ns/op
+BenchmarkSum-4     	 2000000	       656 ns/op
 PASS
-ok  	_/C_/Users/csadmin/workspaces/github/exercism/go/twelve-days	1.471s
-
-goos: windows
-goarch: amd64
-BenchmarkSong-8    	  200000	      9801 ns/op
-BenchmarkVerse-8   	 3000000	       573 ns/op
-PASS
-ok  	_/C_/Users/csadmin/workspaces/github/exercism/go/twelve-days	4.521s
-
-goos: windows
-goarch: amd64
-BenchmarkSong-8    	  200000	      7356 ns/op
-BenchmarkVerse-8   	 3000000	       404 ns/op
-PASS
-ok  	_/C_/Users/csadmin/workspaces/github/exercism/go/twelve-days	3.326s
-
