@@ -4,5 +4,8 @@ BenchmarkPangram-4   	   50000	     20061 ns/op	    3484 B/op	      47 allocs/op
 directly check bounds for letter, only |32 if uppercase
 BenchmarkPangram-4   	  100000	     16486 ns/op	    3484 B/op	      47 allocs/op
 
+using uint32 and bit values for character flags 
+BenchmarkPangram-4   	 2000000	       620 ns/op	       0 B/op	       0 allocs/op
 
-
+eliminate branching, lowercase every c from string 
+BenchmarkPangram-4       3000000           502 ns/op               0 B/op          0 allocs/op

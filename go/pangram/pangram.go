@@ -7,16 +7,14 @@ func IsPangram(s string) bool {
 	}
 
 	var flags uint32 // instead of a map, use the lower 26 bits as an alphabet flag for each char
-	var c byte 
-	for i:=0; i < len(s); i ++ {
-		c = s[i] 
-		if 'A' <= c && c <= 'Z' {
-			c = c | 32
-		}
+	var c byte
+	for i := 0; i < len(s); i++ {
+		c = s[i] | 32
 		if 'a' <= c && c <= 'z' {
 			flags |= 1 << (c - 'a')
 		}
+
 	}
 
-	return flags == 1 << 26 - 1
+	return flags == 1<<26-1
 }
