@@ -6,17 +6,17 @@ func IsPangram(s string) bool {
 		return false
 	}
 
-	var found struct{}
-	alphabet := make(map[int32]struct{})
-
-	for _, r := range s {
-		if 'A' <= r && r <= 'Z' {
-			r = r | 32
+	var flags uint32 // instead of a map, use the lower 26 bits as an alphabet flag for each char
+	var c byte 
+	for i:=0; i < len(s); i ++ {
+		c = s[i] 
+		if 'A' <= c && c <= 'Z' {
+			c = c | 32
 		}
-		if 'a' <= r && r <= 'z' {
-			alphabet[r] = found
+		if 'a' <= c && c <= 'z' {
+			flags |= 1 << (c - 'a')
 		}
 	}
 
-	return len(alphabet) == 26
+	return flags == 1 << 26 - 1
 }
