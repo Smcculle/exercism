@@ -2,4 +2,4 @@ iteration 1
 BenchmarkEncode-4   	  300000	      5133 ns/op	    1416 B/op	      61 allocs/op
 
 iteration 2, using strings.Map
-BenchmarkEncode-4   	 1000000	      1659 ns/op	     512 B/op	      18 allocs/op
+BenchmarkEncode-4   	  300000	      4334 ns/op	    1696 B/op	      65 allocs/op

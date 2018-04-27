@@ -8,7 +8,8 @@ import (
 // normalizer returns a number or lowercase letter [a-z], or -1 if not alphanumeric
 func normalizer(r rune) (newR rune) {
 	r, newR = r|32, -1
-	if 'a' <= newR && newR <= 'z' || '0' <= newR && newR <= '9' {
+
+	if 'a' <= r && r <= 'z' || '0' <= r && r <= '9' {
 		newR = r
 	}
 	return
