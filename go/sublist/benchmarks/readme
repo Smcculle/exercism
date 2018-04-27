@@ -1,0 +1,6 @@
+goos: windows
+goarch: amd64
+pkg: sublist
+BenchmarkSublist-4   	 5000000	       313 ns/op
+PASS
+ok  	sublist	1.903s
