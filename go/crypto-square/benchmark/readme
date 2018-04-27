@@ -1,0 +1,1 @@
+BenchmarkEncode-4   	  300000	      5133 ns/op	    1416 B/op	      61 allocs/op
