@@ -5,7 +5,7 @@ import (
 )
 
 // LargestSeriesProduct calculates the largest product of `span` digits in digits
-func LargestSeriesProduct(digits string, span int) (max int, err error) {
+func LargestSeriesProduct(digits string, span int) (max int64, err error) {
 
 	if span > len(digits) || span < 0 {
 		return -1, errors.New("invalid span")
@@ -22,12 +22,12 @@ func LargestSeriesProduct(digits string, span int) (max int, err error) {
 }
 
 // maxProduct returns max of current and the product of each digit in digits
-func maxProduct(current int, digits string) (i int, err error) {
-	p := 1
+func maxProduct(current int64, digits string) (p int64, err error) {
+	p = 1
 	for i := 0; i < len(digits); i++ {
 		digit := digits[i] - '0'
 		if 0 <= digit && digit <= 9 {
-			p *= int(digit)
+			p *= int64(digit)
 		} else {
 			return 0, errors.New("non digit in string")
 		}

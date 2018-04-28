@@ -1,6 +1,9 @@
 ```bash 
 first iteration
 BenchmarkLargestSeriesProduct-4   	 2000000	       744 ns/op	      64 B/op	       4 allocs/op
+
+change to int64 to support large input
+BenchmarkLargestSeriesProduct-4   	 2000000	       731 ns/op	      64 B/op	       4 allocs/op
 ```
 
 # Largest Series Product
