@@ -14,7 +14,6 @@ BenchmarkSieve-4   	  500000	      2610 ns/op	    5336 B/op	      22 allocs/op
 using []bool again 
 BenchmarkSieve-4   	  500000	      2425 ns/op	    5336 B/op	      22 allocs/op
 
-
 ```
 # Sieve
 
