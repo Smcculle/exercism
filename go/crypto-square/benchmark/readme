@@ -3,3 +3,6 @@ BenchmarkEncode-4   	  300000	      5133 ns/op	    1416 B/op	      61 allocs/op
 
 iteration 2, using strings.Map
 BenchmarkEncode-4   	  300000	      4334 ns/op	    1696 B/op	      65 allocs/op
+
+refactoring loop to avoid if i=0 and allocating builder size
+BenchmarkEncode-4   	  300000	      4119 ns/op	    1840 B/op	      57 allocs/op

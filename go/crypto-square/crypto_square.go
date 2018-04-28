@@ -18,15 +18,23 @@ func normalizer(r rune) (newR rune) {
 // Encode returns an encoded string
 func Encode(s string) string {
 	s = strings.Map(normalizer, s)
-	row, col := RectDims(len(s))
+	lenS := len(s)
+	row, col := RectDims(lenS)
+	boxLen := row * col
 
+	// allocate space for b to avoid resizing
 	var b strings.Builder
-	for i := 0; i < col; i++ {
-		if i != 0 {
-			b.WriteByte(' ')
-		}
-		for j := 0; i+j < row*col; j += col {
-			if i+j < len(s) {
+	b.Grow(lenS)
+
+	for j := 0; j < boxLen; j += col {
+		b.WriteByte(s[j])
+	}
+
+	for i := 1; i < col; i++ {
+		b.WriteByte(' ')
+		for j := 0; i+j < boxLen; j += col {
+
+			if i+j < lenS {
 				b.WriteByte(s[i+j])
 
 			} else {
@@ -37,7 +45,7 @@ func Encode(s string) string {
 	return b.String()
 }
 
-// normalize was much slower than using strings.Map
+// normalize was slower than using strings.Map
 // func normalize(s string) string {
 // 	var b strings.Builder
 // 	b.Grow(len(s))
