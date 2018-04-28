@@ -5,6 +5,9 @@ BenchmarkSieve-4   	  500000	      3314 ns/op	    4688 B/op	      10 allocs/op
 using intlist and larger capacity
 BenchmarkSieve-4   	  500000	      3184 ns/op	    4704 B/op	      11 allocs/op
 
+using named return and starting array at 2
+BenchmarkSieve-4   	  500000	      2966 ns/op	    5336 B/op	      22 allocs/op
+
 ```
 # Sieve
 
