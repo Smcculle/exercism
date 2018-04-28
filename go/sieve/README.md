@@ -8,6 +8,13 @@ BenchmarkSieve-4   	  500000	      3184 ns/op	    4704 B/op	      11 allocs/op
 using named return and starting array at 2
 BenchmarkSieve-4   	  500000	      2966 ns/op	    5336 B/op	      22 allocs/op
 
+start multiples at p^2 to reduce redundant marking
+BenchmarkSieve-4   	  500000	      2610 ns/op	    5336 B/op	      22 allocs/op
+
+using []bool again 
+BenchmarkSieve-4   	  500000	      2425 ns/op	    5336 B/op	      22 allocs/op
+
+
 ```
 # Sieve
 
