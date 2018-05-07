@@ -1,6 +1,9 @@
 ```bash
 tests passing
 BenchmarkClassify-4   	   10000	    154210 ns/op	       0 B/op	       0 allocs/op
+
+add early exit from aliquot sum 
+BenchmarkClassify-4   	   10000	    107555 ns/op	       0 B/op	       0 allocs/op
 ```
 
 # Perfect Numbers

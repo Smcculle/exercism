@@ -18,11 +18,19 @@ const (
 	ClassificationDeficient
 )
 
+func mod(n int64) (m int64) {
+	return 0
+}
+
 // AliquotSum calculates the sum of each factor of n except n itself
 func AliquotSum(n int64) (sum int64) {
 
 	sum = -n
 	for i := int64(1); i <= sqrt(n); i++ {
+		if sum > n {
+			return
+		}
+		
 		if n%i == 0 {
 			f1, f2 := i, n/i
 			if f1 == f2 {
