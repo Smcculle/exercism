@@ -4,6 +4,10 @@ BenchmarkClassify-4   	   10000	    154210 ns/op	       0 B/op	       0 allocs/o
 
 add early exit from aliquot sum 
 BenchmarkClassify-4   	   10000	    107555 ns/op	       0 B/op	       0 allocs/op
+
+fast sqrt for small numbers 
+BenchmarkClassify-4   	   20000	     85552 ns/op	       0 B/op	       0 allocs/op
+
 ```
 
 # Perfect Numbers
