@@ -2,6 +2,9 @@
 tests passing
 BenchmarkDetectAnagrams-4   	  300000	      4381 ns/op	    1472 B/op	      71 allocs/op
 
+using prime hash 
+BenchmarkDetectAnagrams-4   	 2000000	       729 ns/op	     224 B/op	       9 allocs/op
+
 ```
 # Anagram
 

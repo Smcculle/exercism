@@ -46,7 +46,7 @@ func BenchmarkDetectAnagrams(b *testing.B) {
 }
 
 func Benchmark(b *testing.B) {
-	for i:=0; i < b.N; i++ {
+	for i := 0; i < b.N; i++ {
 		for _, tt := range testCases {
 			for _, s := range tt.candidates {
 				isAnagram(tt.subject, s)

@@ -18,7 +18,7 @@ func Detect(subject string, candidates []string) (anagrams []string) {
 			continue
 		}
 
-		if isAnagram(subject, c) {
+		if isAnagramByPrime(subject, c) {
 			anagrams = append(anagrams, c)
 		}
 
@@ -26,6 +26,34 @@ func Detect(subject string, candidates []string) (anagrams []string) {
 	return
 }
 
+// first 26 primes used to calculate a prime hash
+var prime = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101}
+
+
+// primeAnagram uses fundamental theorem of arithmetic to calculate a hash unique among anagrams. 
+// i.e., if len(s1)==len(s2), then h(s1)==h(s2) iff s1 and s2 are anagrams. 
+//BenchmarkDetectAnagrams-4  	729 ns/op	     224 B/op	       9 allocs/op
+func isAnagramByPrime(s1, s2 string) bool {
+	n := len(s1)
+	h1, h2 := 1, 1
+	var ok bool 
+	for i:=0; i < n; i++ {
+		c1 := s1[i] | 32
+		c2 := s2[i] | 32 
+		ok = ok || (c1 != c2) // word is not anagram of itself
+		
+		h1 *= prime[c1 - 'a']
+		h2 *= prime[c2 - 'a']
+	}
+	if ! ok {
+		return false
+	}
+
+	return h1 == h2 
+}
+
+// isAnagram converts each string to a lowercase byte array, sorts it, and compares the values
+//BenchmarkDetectAnagrams-4	      4381 ns/op	    1472 B/op	      71 allocs/op
 func isAnagram(s1, s2 string) bool {
 	n := len(s1)
 	if n != len(s2) {
