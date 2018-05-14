@@ -1,3 +1,9 @@
+```bash 
+initial benchmarks
+BenchmarkEncode-4   5337 ns/op	    1416 B/op	      29 allocs/op
+BenchmarkDecode-4   28134 ns/op	    4496 B/op	      52 allocs/op
+```
+
 # Rail Fence Cipher
 
 Implement encoding and decoding for the rail fence cipher.
