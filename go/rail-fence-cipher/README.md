@@ -1,7 +1,7 @@
 ```bash 
 initial benchmarks
-BenchmarkEncode-4   5337 ns/op	    1416 B/op	      29 allocs/op
-BenchmarkDecode-4   28134 ns/op	    4496 B/op	      52 allocs/op
+BenchmarkEncode-4   5077 ns/op	    1416 B/op	      29 allocs/op
+BenchmarkDecode-4  27272 ns/op	    4496 B/op	      52 allocs/op
 ```
 
 # Rail Fence Cipher

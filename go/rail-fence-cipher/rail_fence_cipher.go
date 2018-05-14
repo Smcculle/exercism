@@ -85,7 +85,7 @@ func GenDecoding(length, numRails int) func() int {
 }
 
 // Encode implements the rail cipher with the given number of rails
-// BenchmarkEncode-4   5337 ns/op	    1416 B/op	      29 allocs/op
+// BenchmarkEncode-4   5077 ns/op	    1416 B/op	      29 allocs/op
 func Encode(s string, numRails int) string {
 	z := make(zipSlice, len(s))
 	z.Zip(s, GenEncoding(numRails))
@@ -94,7 +94,7 @@ func Encode(s string, numRails int) string {
 }
 
 // Decode reverses the rail cipher
-// BenchmarkDecode-4  28134 ns/op	    4496 B/op	      52 allocs/op
+// BenchmarkDecode-4  27272 ns/op	    4496 B/op	      52 allocs/op
 func Decode(s string, numRails int) string {
 	z := make(zipSlice, len(s))
 	z.Zip(s, GenDecoding(len(s), numRails))
