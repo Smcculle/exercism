@@ -1,7 +1,12 @@
 ```bash 
-initial benchmarks
+initial benchmarks with zip/sort
 BenchmarkEncode-4   5077 ns/op	    1416 B/op	      29 allocs/op
 BenchmarkDecode-4  27272 ns/op	    4496 B/op	      52 allocs/op
+
+direct swap 
+BenchmarkEncode-4       188 ns/op              80 B/op          3 allocs/op
+BenchmarkDecode-4       289 ns/op             192 B/op          4 allocs/op
+
 ```
 
 # Rail Fence Cipher
